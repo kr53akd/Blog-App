@@ -7,6 +7,7 @@ import React, { useActionState, useMemo, useState } from 'react'
 
 const SignUpForm = () => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
     const formFields: AppInputProp[] = useMemo(()=>[
         {
@@ -35,8 +36,8 @@ const SignUpForm = () => {
             name: "confirm-password",
             type: "password",
             placeholder: "Enter confirm password",
-            showPassword: showPassword,
-            togglePassword: (e:React.MouseEvent)=> setShowPassword(prev=> !prev)
+            showPassword: showConfirmPassword,
+            togglePassword: (e:React.MouseEvent)=> setShowConfirmPassword(prev=> !prev)
         },
         {
             name: "gender",
@@ -47,7 +48,7 @@ const SignUpForm = () => {
                 {label:"Other", value: "other"}
             ]
         }
-    ],[showPassword]);
+    ],[showPassword, showConfirmPassword]);
     
     const [state, SignUpForm, isPending] = useActionState(registerAction, {message:"", isSuccess: false});
 
@@ -59,8 +60,9 @@ const SignUpForm = () => {
         type={type}
         {...rest}
         />))}
-        <div className='w-4/5 mx-auto'>
+        <div className='w-3/5 mx-auto flex gap-x-2'>
             <AppButton name="Register" isPending={isPending}/>
+            <AppButton type="reset" name="Reset"/>
         </div>
     </form>
   )

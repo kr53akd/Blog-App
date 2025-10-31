@@ -1,0 +1,1 @@
+export const OtpTemplate = (otp:Number)=>`<p> Your Otp is ${otp}</p> please dont share to anyone`
