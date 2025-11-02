@@ -3,66 +3,113 @@ import { registerAction } from '@/app/action/registerAction'
 import AppButton from '@/component/AppButton/AppButton'
 import AppInput from '@/component/AppInput/AppInput'
 import { AppInputProp } from '@/lib/customTypes'
-import React, { useActionState, useMemo, useState } from 'react'
+import React, { useActionState, useMemo, useState, useRef } from 'react'
 
 const SignUpForm = () => {
-    const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+  const formRef = useRef<HTMLFormElement | null>(null);
 
-    const formFields: AppInputProp[] = useMemo(()=>[
-        {
-           name:"firstName",
-           type: "text",
-           placeholder: "Enter first name"
-        },
-        {
-           name:"lastName",
-           type: "text",
-           placeholder: "Enter last name"
-        },
-        {
-           name:"email",
-           type: "email",
-           placeholder: "Enter email"
-        },
-        {
-            name: "password",
-            type: "password",
-            placeholder: "Enter password",
-            showPassword: showPassword,
-            togglePassword: (e:React.MouseEvent)=> setShowPassword(prev=> !prev)
-        },
-        {
-            name: "confirm-password",
-            type: "password",
-            placeholder: "Enter confirm password",
-            showPassword: showPassword,
-            togglePassword: (e:React.MouseEvent)=> setShowPassword(prev=> !prev)
-        },
-        {
-            name: "gender",
-            type: "radio",
-            options:[
-                {label:"Male", value: "male"},
-                {label:"Female", value: "female"},
-                {label:"Other", value: "other"}
-            ]
-        }
-    ],[showPassword]);
-    
-    const [state, SignUpForm, isPending] = useActionState(registerAction, {message:"", isSuccess: false});
+  const formFields: AppInputProp[] = useMemo(() => [
+    { name: "firstName", type: "text", placeholder: "Enter first name", required:true },
+    { name: "lastName", type: "text", placeholder: "Enter last name",required:true },
+    { name: "email", type: "email", placeholder: "Enter email", required:true },
+    {
+      name: "password",
+      type: "password",
+      placeholder: "Enter password",
+      showPassword: showPassword,
+      togglePassword: (e: React.MouseEvent) => setShowPassword(prev => !prev),
+      required:true
+    },
+    {
+      name: "confirm-password",
+      type: "password",
+      placeholder: "Enter confirm password",
+      showPassword: showPassword,
+      togglePassword: (e: React.MouseEvent) => setShowPassword(prev => !prev),
+      required:true
+    },
+    {
+      name: "gender",
+      type: "radio",
+      options: [
+        { label: "Male", value: "male" },
+        { label: "Female", value: "female" },
+        { label: "Other", value: "other" }
+      ],
+      required:true
+    }
+  ], [showPassword]);
+
+  const [state, SignUpFormAction, isPending] = useActionState(registerAction, {
+    message: "",
+    isSuccess: false
+  });
+
+  //  Validate password match before submitting
+  const handleSubmit = async (formData: FormData) => {
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirm-password") as string;
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    setError("");
+    SignUpFormAction(formData);
+  };
+
+  //  Reset all form fields and messages
+  const handleReset = () => {
+    formRef.current?.reset();
+    setError("");
+  };
 
   return (
-    <form className='space-y-2' action={SignUpForm}>
-        {formFields?.map(({name, type, ...rest}:AppInputProp, index: number)=>(<AppInput
-        key={index}
-        name={name}
-        type={type}
-        {...rest}
-        />))}
-        <div className='w-4/5 mx-auto'>
-            <AppButton name="Register" isPending={isPending}/>
+    <div className="flex justify-center items-center  px-4">
+      <form
+        ref={formRef}
+        className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md space-y-4 border border-gray-100 transition-all hover:shadow-xl"
+        action={handleSubmit}
+      >
+        <h2 className="text-2xl font-semibold text-center text-gray-800 mb-4">
+          Create an Account
+        </h2>
+
+        {formFields.map(({ name, type, ...rest }: AppInputProp, index: number) => (
+          <div key={index} className="flex flex-col space-y-1">
+            <AppInput
+              name={name}
+              type={type}
+              {...rest}
+            />
+          </div>
+        ))}
+
+        {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+
+        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <AppButton name="Register" isPending={isPending} />
+          <button
+            type="button"
+            onClick={handleReset}
+            className="w-full sm:w-auto cursor-pointer text-gray-600 hover:text-gray-400 transition-all"
+          >
+            Reset
+          </button>
         </div>
-    </form>
+
+
+        <p className="text-center text-gray-500 text-sm mt-3">
+          Already have an account?{" "}
+          <a href="/sign-in" className="text-blue-600 hover:underline">
+            Sign In
+          </a>
+        </p>
+      </form>
+    </div>
   )
 }
 
