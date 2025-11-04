@@ -3,7 +3,7 @@ import React, { useActionState, useMemo, useState } from "react";
 import AppInput from "@/component/AppInput/AppInput";
 import AppButton from "@/component/AppButton/AppButton";
 import { AppInputProp } from "@/lib/customTypes";
-import { registerAction } from "@/app/action/registerAction";
+import { registerAction, signInAction } from "@/app/action/registerAction";
 
 const SignInForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -26,7 +26,7 @@ const SignInForm = () => {
     },
   ], [showPassword]);
 
-  const [state, SignInAction, isPending] = useActionState( registerAction, {
+  const [state, SignInAction, isPending] = useActionState( signInAction, {
     message: "",
     isSuccess: false,
   });

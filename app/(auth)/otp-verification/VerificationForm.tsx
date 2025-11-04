@@ -2,19 +2,27 @@
 import React, { useActionState, useEffect, useRef, useState } from "react";
 import AppButton from "@/component/AppButton/AppButton";
 import { otpVerificationAction } from "@/app/action/registerAction";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 
 const OTP_LENGTH = 4; 
 
 const VerificationForm = () => {
+  const router = useRouter();
   const [otp, setOtp] = useState(Array(OTP_LENGTH).fill(""));
   const [error, setError] = useState("");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
+  const  searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const type = searchParams.get("type");
 
 
   const [state, OtpVerifyAction, isPending] = useActionState(otpVerificationAction,{
     message: "",
     isSuccess: false,
+    email: email
   });
 
   //  Handle OTP input changes
@@ -37,19 +45,23 @@ const VerificationForm = () => {
   };
 
   //  Handle Submit
-//   const handleSubmit = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     const enteredOtp = otp.join("");
-//     if (enteredOtp.length < OTP_LENGTH) {
-//       setError("Please enter a complete OTP.");
-//       return;
-//     }
+  const handleSubmit = async (formData: FormData) => {
+    const enteredOtp = otp.join("");
+    if (enteredOtp.length < OTP_LENGTH) {
+      setError("Please enter a complete OTP.");
+      return;
+    }
 
-//     setError("");
-//     const formData = new FormData();
-//     formData.append("otp", enteredOtp);
-//     OtpVerifyAction(formData);
-//   };
+    setError("");
+    formData.append("otp", enteredOtp);
+    console.log("FormData OTP:", formData.get("otp"));
+    OtpVerifyAction(formData);
+    if(type === "forgot-password"){
+      router.push(`/reset-password?email=${encodeURIComponent(email ?? '')}`);
+    }
+    
+    
+  };
 
   //  Resend OTP
   const handleResend = () => {
@@ -67,7 +79,7 @@ const VerificationForm = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-linear-to-br from-gray-50 to-blue-100 px-4">
       <form
-        action={OtpVerifyAction}
+        action={handleSubmit}
         className="bg-white shadow-lg rounded-2xl p-8 w-full max-w-md space-y-6 border border-gray-100 transition-all hover:shadow-xl"
       >
         <h2 className="text-2xl font-semibold text-center text-gray-800">

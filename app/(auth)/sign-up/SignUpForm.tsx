@@ -64,7 +64,7 @@ const SignUpForm = () => {
 
   useEffect(()=>{
       if(state?.isSuccess){
-        router.push(`/otp-verification?email=${state?.email}`);
+        router.push(`/otp-verification?email=${encodeURIComponent(state?.email)}&type=registration`);
       }
   },[state?.isSuccess])
   return (
