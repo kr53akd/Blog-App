@@ -5,8 +5,8 @@ import { FaRegEye, FaRegEyeSlash } from 'react-icons/fa'
 const AppInput = ({type, name, ...rest}: AppInputProp) => {
     switch (type){
         case "radio":
-            const radioOptions = <div className='flex'>{rest?.options?.map(({label, value,}:{label:string, value: string | number}, index: number)=><label htmlFor={name} key={index} className='flex items-center w-fit'>
-                <input id={name} type='radio' name={name} value={value} className='me-1 ms-2'/>{label}
+            const radioOptions = <div className='flex'>{rest?.options?.map(({label, value,}:{label:string, value: string | number}, index: number)=><label htmlFor={name+index} key={index} className='flex items-center w-fit'>
+                <input id={name+index} type='radio' name={name} value={value} className='me-1 ms-2'/>{label}
                 </label>)
             }
             </div>
