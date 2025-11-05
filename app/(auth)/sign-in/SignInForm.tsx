@@ -1,5 +1,5 @@
 "use client"
-import React, { useActionState, useMemo, useState } from "react";
+import React, { useActionState, useEffect, useMemo, useState } from "react";
 import AppInput from "@/component/AppInput/AppInput";
 import AppButton from "@/component/AppButton/AppButton";
 import { AppInputProp } from "@/lib/customTypes";
@@ -51,6 +51,13 @@ const SignInForm = () => {
     const form = document.getElementById("signin-form") as HTMLFormElement;
     form?.reset();
   };
+
+  useEffect(()=>{
+    if(state?.isSuccess && window){
+      window.location.reload();
+      window.location.href = "/"
+    }
+  },[state?.isSuccess])
 
   return (
     <div className="flex justify-center items-center  px-4">

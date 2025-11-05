@@ -68,14 +68,17 @@ export const otpVerificationAction = async( prevState:{ message: string, isSucce
     if(!user){
         return {message:"User not found", isSuccess:false, email:""}
     }
-    if(user.Otp?.toString() !== otp){
+    if(user.Otp !== Number(otp)){
         return {message:"Invaild otp", isSuccess:false, email:""}
     }
     const updateUser = await prisma.user.update({
         where:{ email},
-        data:{ Otp: null, isActive: true }
+        data:{ Otp: null, isActive: true, updatedAt: new Date() }
     })
-   return {message:"User Reqistered Successfully", isSuccess:true, email:email}
+    if(updateUser){
+       return {message:"User Reqistered Successfully", isSuccess:true, email:email}
+    }
+     return {message:"Faliled to update the user", isSuccess:false, email:email}
 }
 
 export const forgotpasswordAction = async( prevState:{ message: string, isSuccess: boolean }, formData: FormData,)=>{
@@ -144,7 +147,9 @@ export const signInAction = async( prevState:{ message: string, isSuccess: boole
     const password = formData.get("password") as string;
     const user = await prisma.user.findUnique({
         where:{ email }
-    })
+    });
+
+    console.log(user, 155)
     if(!user){
         return {message:"User not found", isSuccess:false}
     }
@@ -153,5 +158,4 @@ export const signInAction = async( prevState:{ message: string, isSuccess: boole
         return {message:"Invalid password", isSuccess:false}
     }
     return {message:"Sign In Successful", isSuccess:true}
-
 }

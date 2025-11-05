@@ -25,6 +25,12 @@ const VerificationForm = () => {
     email: email
   });
 
+  useEffect(()=>{
+    if(state?.isSuccess){
+      router.push("/")
+    }
+  },[state?.isSuccess])
+
   //  Handle OTP input changes
   const handleChange = (index: number, value: string) => {
     if (!/^\d*$/.test(value)) return; 
