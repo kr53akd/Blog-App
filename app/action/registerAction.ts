@@ -5,6 +5,9 @@ import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt";
 import { OtpTemplate } from "../emailTemplates/OtpTemplate";
 import { transporter } from "@/lib/transporter";
+import { cookies } from "next/headers";
+import { generateToken } from "@/lib/jwt";
+import { NextResponse } from "next/server";
 
 export const registerAction =  async( prevState:{ message: string, isSuccess: boolean, email?:string}, formData: FormData,) =>{
     const email = formData?.get("email") as string
@@ -146,16 +149,47 @@ export const signInAction = async( prevState:{ message: string, isSuccess: boole
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const user = await prisma.user.findUnique({
-        where:{ email }
+        where:{ 
+            email
+         }
     });
 
-    console.log(user, 155)
     if(!user){
-        return {message:"User not found", isSuccess:false}
+        return {message:"User not found", isSuccess:false, email:null}
+    }
+    if(!user?.isActive){
+        const generatedOTP:number = generateOtp();
+        const otpHtml = OtpTemplate(generatedOTP);
+        const message = {
+        from: 'noreply',
+        to: `${email}`,
+        subject: 'Blog-app OTP Verification',
+        html: otpHtml 
+    };
+
+    await prisma?.user?.update({
+        data: {Otp: generatedOTP},
+        where:{email}
+    }) 
+        transporter.sendMail(message, (error, info)=>{
+            if(error){
+                console.log(`Error in sending the otp mail for activating the user while login: ${error}`);
+            }
+        })
+        return {message:"User not verified", isSuccess:true, email: email}
     }
     const isPasswordValid = bcrypt.compareSync(password, user.password);
     if(!isPasswordValid){
-        return {message:"Invalid password", isSuccess:false}
+        return {message:"Invalid password", isSuccess:false, email:null}
     }
-    return {message:"Sign In Successful", isSuccess:true}
+    const generatedToken = generateToken(user);
+    const storeCookie = await cookies();
+    storeCookie.set({
+        name: "token",
+        value: generatedToken,
+        httpOnly: process.env.NODE_ENV === "production",
+        secure:process.env.NODE_ENV === "production",
+        path:"/"
+    });
+    return {message:"Sign In Successful", isSuccess:true, email:email}
 }

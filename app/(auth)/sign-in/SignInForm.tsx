@@ -29,6 +29,7 @@ const SignInForm = () => {
   const [state, SignInAction, isPending] = useActionState( signInAction, {
     message: "",
     isSuccess: false,
+    email: null
   });
 
   //  Handle client-side validation before calling action
@@ -53,7 +54,11 @@ const SignInForm = () => {
   };
 
   useEffect(()=>{
-    if(state?.isSuccess && window){
+    if(state?.isSuccess && window && state?.message==="User not verified"){
+      window.location.reload();
+      window.location.href = `/otp-verification?email=${state?.email}`
+    }
+    else if(state?.isSuccess && window){
       window.location.reload();
       window.location.href = "/"
     }
