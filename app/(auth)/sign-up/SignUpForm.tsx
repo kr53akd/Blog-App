@@ -4,9 +4,10 @@ import AppButton from '@/component/AppButton/AppButton'
 import AppInput from '@/component/AppInput/AppInput'
 import { AppInputProp } from '@/lib/customTypes'
 import { useRouter } from 'next/navigation'
-import React, { useActionState, useMemo, useState, useEffect } from 'react'
+import React, { useActionState, useMemo, useState, useEffect,} from 'react'
 
 const SignUpForm = () => {
+ 
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const router = useRouter();
@@ -60,7 +61,7 @@ const SignUpForm = () => {
 
     setError("");
     SignUpFormAction(formData);
-  };
+    };
 
   useEffect(()=>{
       if(state?.isSuccess){

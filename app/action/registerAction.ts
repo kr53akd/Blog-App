@@ -34,7 +34,8 @@ export const registerAction =  async( prevState:{ message: string, isSuccess: bo
         password: hashedPassword,
         gender,
         email,
-        Otp: generatedOTP
+        Otp: generatedOTP,
+        
     }
     
     const otpHtml = OtpTemplate(generatedOTP);
@@ -193,3 +194,10 @@ export const signInAction = async( prevState:{ message: string, isSuccess: boole
     });
     return {message:"Sign In Successful", isSuccess:true, email:email}
 }
+
+export const signOutAction = async(prevState: { message: string, isSuccess: boolean,})=>{
+    const storeCookie = await cookies();
+    storeCookie.delete("token");
+    return {message:"Sign Out Successful", isSuccess:true}
+}
+

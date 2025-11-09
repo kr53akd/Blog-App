@@ -3,9 +3,11 @@ import React, { useActionState, useEffect, useMemo, useState } from "react";
 import AppInput from "@/component/AppInput/AppInput";
 import AppButton from "@/component/AppButton/AppButton";
 import { AppInputProp } from "@/lib/customTypes";
-import { registerAction, signInAction } from "@/app/action/registerAction";
+import { signInAction } from "@/app/action/registerAction";
+import { useRouter } from "next/navigation";
 
 const SignInForm = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
@@ -51,6 +53,7 @@ const SignInForm = () => {
     setError("");
     const form = document.getElementById("signin-form") as HTMLFormElement;
     form?.reset();
+  
   };
 
   useEffect(()=>{
@@ -59,8 +62,8 @@ const SignInForm = () => {
       window.location.href = `/otp-verification?email=${state?.email}`
     }
     else if(state?.isSuccess && window){
-      window.location.reload();
-      window.location.href = "/"
+      router.push("/")
+      router.refresh();
     }
   },[state?.isSuccess])
 

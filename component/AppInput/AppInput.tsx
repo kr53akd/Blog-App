@@ -25,7 +25,7 @@ const AppInput = ({type, name, ...rest}: AppInputProp) => {
                 </select>
         </label>
         // default we are using for email password and text
-        default: return <label htmlFor={name} className='flex w-full border rounded-xl px-2 py-1 relative'>
+        default: return <label htmlFor={name} className='flex w-full relative'>
             <input 
             id={name} 
             name={name}
@@ -33,7 +33,7 @@ const AppInput = ({type, name, ...rest}: AppInputProp) => {
             placeholder={rest?.placeholder}
             required = {rest?.required}
             defaultValue={rest?.defaultValue}
-            className={`${rest?.coustomClass} w-full focus:outline-none text-sm`}
+            className={`${rest?.coustomClass} w-full focus:outline-none text-sm border rounded-xl px-2 py-1 `}
             /> 
             {/* if input type is password then we are showing the eye button to toggle the type from password to text and vice-versa */}
             {type === "password" && (<span onClick={rest?.togglePassword} className='absolute right-2 cursor-pointer'>{rest?.showPassword?<FaRegEye />: <FaRegEyeSlash />}</span>)}

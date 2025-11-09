@@ -16,3 +16,12 @@ export type AppButtonProp = {
     isPending?: boolean
     coustomClass?: string
 }
+
+export type postType = {
+    id: number,
+    title: string,
+      author: string,
+      date: string,
+      image: string,
+      tag: string,
+}
