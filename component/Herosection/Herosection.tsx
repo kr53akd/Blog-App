@@ -1,4 +1,5 @@
 "use client"
+import Link from 'next/link';
 import React, { useState } from 'react'
 
 const Herosection = () => {
@@ -22,6 +23,9 @@ const Herosection = () => {
           <button className="bg-blue-600 text-white px-5 py-2 rounded-r-lg hover:bg-blue-700">
             Search
           </button>
+        </div>
+        <div className='mt-5'>
+        <Link href="/" className='px-5 py-2 bg-green-800 text-white rounded-3xl'>Create Blog</Link>
         </div>
       </section>
   )

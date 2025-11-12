@@ -30,3 +30,14 @@ model usertypes {
   userTypeName String
   user         user[]
 }
+
+model Post {
+  id  Int @unique() @default(autoincrement())
+  title String
+  author String
+  image String
+  category String
+  content String
+  createAt DateTime @default(now())
+  updateAt DateTime @default(now())
+}
