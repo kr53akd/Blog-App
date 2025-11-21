@@ -1,3 +1,4 @@
+import { tag } from './../node_modules/effect/src/Match';
  export type AppInputProp = {
     type: string
     name: string
@@ -18,10 +19,14 @@ export type AppButtonProp = {
 }
 
 export type postType = {
-    id: number,
-    title: string,
-      author: string,
-      date: string,
-      image: string,
-      tag: string,
+    title: string;
+    image: string;
+    category: string;
+    content: string;
+    id: number;
+    authorName: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    authorId: number | null;
+    tag?: string | null;
 }

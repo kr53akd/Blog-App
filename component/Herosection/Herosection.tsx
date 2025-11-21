@@ -25,7 +25,7 @@ const Herosection = () => {
           </button>
         </div>
         <div className='mt-5'>
-        <Link href="/" className='px-5 py-2 bg-green-800 text-white rounded-3xl'>Create Blog</Link>
+        <Link href="/create-post" className='px-5 py-2 bg-green-800 text-white rounded-3xl'>Create Blog</Link>
         </div>
       </section>
   )

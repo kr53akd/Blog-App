@@ -22,6 +22,8 @@ model user {
   userTypeId Int       @default(2)
   usertypes  usertypes @relation(fields: [userTypeId], references: [id], map: "User_userTypeId_fkey")
 
+    posts      Post[]
+
   @@index([userTypeId], map: "User_userTypeId_fkey")
 }
 
@@ -32,12 +34,14 @@ model usertypes {
 }
 
 model Post {
-  id  Int @unique() @default(autoincrement())
-  title String
-  author String
-  image String
-  category String
-  content String
-  createAt DateTime @default(now())
-  updateAt DateTime @default(now())
+  id        Int      @id @default(autoincrement())
+  title     String
+  image     String @db.LongText
+  category  String
+  content   String
+  authorId  Int?
+  author    user?    @relation(fields: [authorId], references: [id])
+  authorName String? 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

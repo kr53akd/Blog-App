@@ -1,9 +1,20 @@
+"use client"
+import { fetchFeaturedPosts } from '@/app/action/registerAction';
 import { postType } from '@/lib/customTypes'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react';
 
 
-const FeaturedSection = ({blogs}:{blogs:postType[]}) => {
+const FeaturedSection = () => {
+   const [blogs, setBlogs] =  useState<postType []>([]);
+    useEffect(()=>{
+        const fetchBlogs = async()=>{
+            const response = await fetchFeaturedPosts();
+            setBlogs(response);
+        }
+        fetchBlogs();
+    },[])
   return (
     <section className="max-w-6xl  mx-auto  py-12 ">
         <h2 className="text-3xl font-bold mb-8 text-center">Featured Posts</h2>
@@ -27,7 +38,7 @@ const FeaturedSection = ({blogs}:{blogs:postType[]}) => {
                   {blog.title}
                 </h3>
                 <p className="text-gray-500 text-sm mt-1">
-                  By {blog.author} • {blog.date}
+                  By {blog.authorName} • {blog.updatedAt.toDateString()}
                 </p>
               </div>
             </Link>

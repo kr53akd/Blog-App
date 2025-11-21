@@ -6,7 +6,7 @@ export async function getUserFromCookies() {
   if (!userToken) return null;
 
   try {
-    const decoded = jwt.decode(userToken) as { name: string; email: string };
+    const decoded = jwt.decode(userToken) as { firstName: string; email: string; id: number };
     return decoded;
   } catch {
     return null;
